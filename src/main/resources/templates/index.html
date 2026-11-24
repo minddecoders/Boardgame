@@ -1,54 +1,152 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" data-bs-theme="light">
 
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      data-bs-theme="dark">
 
 <head th:replace="fragments/header.html :: html-head(title='Boardgame Home')"></head>
 
-<body>
+<body class="gaming-body">
+
     <nav th:replace="fragments/links :: nav.navigation-links"></nav>
 
-    <main class="container">
-        <div class="p-4 p-md-5 mb-4 text-center">
-            <div class="container col-md-6">
-                <h1>Boardgame Lists</h1>
+    <main class="container homepage-shell">
 
-                <div id="error" class="error pt-3">
-                    <div th:if="${userAddedMsg}">
-                        <p th:text="${userAddedMsg}"></p>
-                    </div>
+        <!-- Hero Section -->
+        <section class="homepage-hero">
+
+            <div class="hero-content">
+
+                <span class="eyebrow">WELCOME TO THE GAME CENTER</span>
+
+                <h1>
+                    Discover Your Next
+                    <span class="hero-highlight">Adventure</span>
+                </h1>
+
+                <p>
+                    Explore exciting board games, discover new favorites,
+                    and share your gaming experience.
+                </p>
+
+                <div class="hero-actions"
+                     sec:authorize="!hasRole('ROLE_USER')">
+
+                    <a th:href="@{/login}" class="hero-button primary-button">
+                        Login
+                    </a>
+
+                    <a th:href="@{/newUser}" class="hero-button secondary-button">
+                        Create Account
+                    </a>
+
                 </div>
 
-                <div th:unless="${boardgames.empty}" class="py-3 my-3">
-                    <div class="list-group d-flex flex-wrap justify-content-center" th:each="boardgame : ${boardgames}">
-                        <a href="#" th:href='@{|/${boardgame.id}|}'
-                            class="list-group-item list-group-item-action py-3 my-2">
-                            <h4 th:text="${boardgame.name}">Name</h4>
-                        </a>
-                    </div>
+                <div class="hero-actions"
+                     sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')">
+
+                    <a th:href="@{/user}" class="hero-button primary-button">
+                        My Dashboard
+                    </a>
+
+                    <a th:href="@{/secured/addBoardGame}"
+                       class="hero-button secondary-button">
+                        Add a Game
+                    </a>
+
                 </div>
+
             </div>
 
-            <div th:if="${boardgames.empty}">
-                <p>Currently there is no boardgame database exists.</p>
+            <div class="hero-decoration">
+                <div class="game-symbol">🎲</div>
+                <div class="game-symbol small-symbol">♟️</div>
+                <div class="game-symbol small-symbol second-symbol">🃏</div>
             </div>
 
-            <div sec:authorize="!hasRole('ROLE_USER')">
-                <p class="lead">For more services, login <a href="#" th:href="@{/login}">Here</a></p>
-                <p class="lead">To join to the service, <a href="#" th:href="@{/newUser}">Click</a> here</p>
+        </section>
+
+        <!-- Success Message -->
+        <div th:if="${userAddedMsg}" class="homepage-message">
+            <p th:text="${userAddedMsg}"></p>
+        </div>
+
+        <!-- Board Game Section -->
+        <section class="homepage-games">
+
+            <div class="homepage-section-heading">
+                <div>
+                    <span class="eyebrow">EXPLORE THE COLLECTION</span>
+                    <h2>Boardgame Library</h2>
+                    <p>Choose a game and start exploring.</p>
+                </div>
+
+                <span class="game-count"
+                      th:text="${boardgames.size()} + ' Games'">
+                    0 Games
+                </span>
             </div>
-            <div sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')">
-                <p class="lead">Click <a href="#" th:href="@{/secured/addBoardGame}">Here</a> to add a boardgame!</p>
-                <form action="#" th:action="@{/logout}" method="post">
-                    <input type="submit" value="Logout" class="btn btn-primary m-2 pb-2">
+
+            <div th:unless="${boardgames.empty}" class="homepage-game-grid">
+
+                <a th:each="boardgame : ${boardgames}"
+                   th:href="@{|/${boardgame.id}|}"
+                   class="homepage-game-card">
+
+                    <div class="game-card-icon">🎮</div>
+
+                    <div class="game-card-content">
+                        <h3 th:text="${boardgame.name}">Game Name</h3>
+                        <p>Explore game details and reviews</p>
+                    </div>
+
+                    <span class="game-card-arrow">→</span>
+
+                </a>
+
+            </div>
+
+            <div th:if="${boardgames.empty}" class="empty-games">
+                <div class="empty-icon">🎲</div>
+                <h3>No Games Available</h3>
+                <p>There are currently no board games in the database.</p>
+            </div>
+
+        </section>
+
+        <!-- Logged-in User Actions -->
+        <section class="homepage-member-section"
+                 sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')">
+
+            <div>
+                <span class="eyebrow">MEMBER AREA</span>
+                <h2>Ready for more?</h2>
+                <p>Add a new board game to the collection.</p>
+            </div>
+
+            <div class="member-actions">
+                <a th:href="@{/secured/addBoardGame}"
+                   class="hero-button primary-button">
+                    Add Board Game
+                </a>
+
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="hero-button logout-home-button">
+                        Logout
+                    </button>
                 </form>
             </div>
-        </div>
+
+        </section>
+
     </main>
-    <div class="b-example-divider border border-light"></div>
+
+    <div class="b-example-divider"></div>
 
     <div th:include="fragments/links :: div.bottom-links"></div>
-    <div th:replace="fragments/footer.html :: page-footer"></div>
-</body>
 
+    <div th:replace="fragments/footer.html :: page-footer"></div>
+
+</body>
 </html>

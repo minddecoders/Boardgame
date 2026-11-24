@@ -1,41 +1,107 @@
+
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org"
-    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
-<head th:replace="fragments/header.html :: html-head(title='User Area!')"></head>
+<head th:replace="fragments/header.html :: html-head(title='Gaming Dashboard')"></head>
 
-<body>
+<body class="gaming-body">
+
     <nav th:replace="fragments/links :: nav.navigation-links"></nav>
-    <main class="container">
-        <div class="p-4 p-md-5 mb-4 text-center">
-            <h1>Welcome to the User's Secured Area!</h1>
-            <div class="container col-md-6">
-                <div class="bg-light border rounded py-3 my-3 ">
-                    User name: <span sec:authentication="name"></span>
-                    <br>
-                    Roles: <span sec:authentication="principal.authorities"></span>
-                    <br><br>
-                    <p class="lead">Users Can:</p>
-                    <ul class="lead">
-                        <li>
-                            Add board games to the list
-                        </li>
-                        <li>
-                            Write board game reviews
-                        </li>
-                    </ul>
-                </div>
-                <p class="lead">Go back to the <a href="#" th:href="@{/secured}">Gateway</a></p>
-                <p class="lead">Go back <a href="#" th:href="@{/}">Home</a></p>
-                <form action="#" th:action="@{/logout}" method="post">
-                    <input type="submit" value="Logout" class="btn btn-primary m-2 pb-2">
-                </form>
+
+    <main class="dashboard-shell">
+
+        <section class="dashboard-welcome">
+            <div>
+                <span class="eyebrow">PLAYER DASHBOARD</span>
+                <h1>Welcome back, <span sec:authentication="name"></span>!</h1>
+                <p>Your board game adventure starts here.</p>
             </div>
+
+            <div class="player-status">
+                <span class="status-dot"></span>
+                ONLINE
+            </div>
+        </section>
+
+        <section class="profile-panel">
+            <div class="profile-avatar">🎮</div>
+
+            <div class="profile-information">
+                <span class="profile-label">YOUR PLAYER PROFILE</span>
+                <h2 sec:authentication="name">Player</h2>
+                <p>
+                    Account role:
+                    <span class="role-badge"
+                          sec:authentication="principal.authorities">
+                    </span>
+                </p>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">YOUR WORKSPACE</span>
+                    <h2>Game Center</h2>
+                </div>
+                <p>Choose what you want to do.</p>
+            </div>
+
+            <div class="dashboard-grid">
+
+                <a th:href="@{/}" class="action-card">
+                    <div class="action-icon purple">🎲</div>
+                    <h3>Explore Games</h3>
+                    <p>Browse the available board games in the database.</p>
+                    <span class="card-link">Browse library →</span>
+                </a>
+
+                <a th:href="@{/secured/addBoardGame}" class="action-card">
+                    <div class="action-icon cyan">➕</div>
+                    <h3>Add a Game</h3>
+                    <p>Add a new board game to the game collection.</p>
+                    <span class="card-link">Add game →</span>
+                </a>
+
+                <a th:href="@{/}" class="action-card">
+                    <div class="action-icon pink">⭐</div>
+                    <h3>Write a Review</h3>
+                    <p>Choose a board game from the library and share your review.</p>
+                    <span class="card-link">Find a game →</span>
+                </a>
+
+                <a th:href="@{/secured}" class="action-card">
+                    <div class="action-icon orange">🛡️</div>
+                    <h3>Account Gateway</h3>
+                    <p>View your secured account information and access.</p>
+                    <span class="card-link">View account →</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="dashboard-tip">
+            <div class="tip-icon">💡</div>
+            <div>
+                <h3>Player tip</h3>
+                <p>Explore the game library, select a game and share your thoughts through a review.</p>
+            </div>
+        </section>
+
+        <div class="dashboard-logout">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-button">
+                    Logout
+                </button>
+            </form>
         </div>
+
     </main>
-    <div class="b-example-divider border border-light"></div>
+
     <div th:include="fragments/links :: div.bottom-links"></div>
     <div th:replace="fragments/footer.html :: page-footer"></div>
-</body>
 
+</body>
 </html>

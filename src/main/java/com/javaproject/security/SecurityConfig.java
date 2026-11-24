@@ -81,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .dataSource(dataSource)
                 .withDefaultSchema()
                 .passwordEncoder(passwordEncoder)
-                .withUser("bugs")
+                .withUser("sidra")
                 .password(passwordEncoder.encode("bunny")).roles("USER")
                 .and()
                 .withUser("daffy")
